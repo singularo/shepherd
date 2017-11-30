@@ -183,6 +183,12 @@ objects:
           name: shepherd-web
           ports:
           - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /probe.htm
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
           resources:
             limits:
               memory: ${MEMORY_LIMIT_WEB}
