@@ -81,11 +81,15 @@ Optionally you can run OpenShift locally with `docker` on your host machine by c
 
 ```
 # macOS installation script
-# This will ensure that all deps for docker toolbox/machine development are installed correctly.
-./dsh install_tools
+
+# clone repository
+# cd into cloned repository
 
 # Setup
 composer install
+
+# This will ensure that all deps for docker toolbox/machine development are installed correctly.
+./dsh install_tools
 
 # Bring up containers, runs any configuration tasks
 ./dsh start
