@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: uofa/apache2-php7-dev:foundation
+    image: uofa/apache2
     # Chrome webdriver requires this - used for tests.
     privileged: true
     hostname: ${PROJECT}
@@ -9,12 +9,28 @@ services:
     ports:
       - 8000:80
     environment:
+      DATABASE_HOST: db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      VIRTUAL_HOST: ${PROJECT}.${DOMAIN}
+    volumes:
+      - .:/code
+      - ./shared:/shared
+      - ${HOST_SSH_AUTH_SOCK_DIR}:/ssh
+    networks:
+      - default
+
+  php-fpm:
+    image: uofa/php-fpm
+    environment:
       SITE_TITLE: Shepherd
       SITE_MAIL: site@example.com
       SITE_ADMIN_EMAIL: admin@example.com
       SITE_ADMIN_USERNAME: admin
       SITE_ADMIN_PASSWORD: password
       DATABASE_HOST: db
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
       PUBLIC_DIR: /shared/public
       PRIVATE_DIR: /shared/private
       TMP_DIR: /shared/tmp
@@ -26,7 +42,6 @@ services:
       SHEPHERD_SECRET_PATH: /code/private
       XDEBUG_CONFIG: "remote_host=172.17.0.1"
       PHP_IDE_CONFIG: serverName=${PROJECT}.${DOMAIN}
-      VIRTUAL_HOST: ${PROJECT}.${DOMAIN}
     volumes:
       - .:/code
       - ./shared:/shared

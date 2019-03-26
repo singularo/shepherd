@@ -152,18 +152,18 @@ Connecting via ./dsh shell and running robo build is a common next step."
 }
 
 # Command: ./dsh shell
-# Connects a shell to the web image as the current user.
+# Connects a shell to the php-fpm image as the current user.
 dsh_shell() {
   dsh_start
 
   # Run the shell as the current user, avoiding permission issues.
-  if ! docker-compose -f ${DOCKER_COMPOSE_FILE} exec web id -u ${USER} > /dev/null 2>&1; then
-    notice "Setting up user $USER on web container."
+  if ! docker-compose -f ${DOCKER_COMPOSE_FILE} exec php-fpm id -u ${USER} > /dev/null 2>&1; then
+    notice "Setting up user $USER on php-fpm container."
     # Add user with local $USER name to container.
-    docker-compose -f ${DOCKER_COMPOSE_FILE} exec web adduser --disabled-password --uid ${UID} \
+    docker-compose -f ${DOCKER_COMPOSE_FILE} exec php-fpm adduser --disabled-password --uid ${UID} \
       --gecos ${USER} --home /home/${USER} ${USER} > /dev/null
     # Allow sudo without password for user.
-    docker-compose -f ${DOCKER_COMPOSE_FILE} exec web /bin/bash -c "echo '${USER} ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/${USER}"
+    docker-compose -f ${DOCKER_COMPOSE_FILE} exec php-fpm /bin/bash -c "echo '${USER} ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/${USER}"
   fi
 
   docker-compose -f ${DOCKER_COMPOSE_FILE} exec \
@@ -176,7 +176,7 @@ dsh_shell() {
     --env OPENSHIFT_URL=${OPENSHIFT_URL} \
     --env COLUMNS="$(tput cols)" \
     --env LINES="$(tput lines)" \
-    web ${@:-/bin/bash}
+    php-fpm ${@:-/bin/bash}
 }
 
 # Command: ./dsh stop
