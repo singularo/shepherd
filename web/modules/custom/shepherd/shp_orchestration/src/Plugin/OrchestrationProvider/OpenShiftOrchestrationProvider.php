@@ -393,7 +393,7 @@ class OpenShiftOrchestrationProvider extends OrchestrationProviderBase {
     $this->client->deleteCronJob('', 'app=' . $deployment_name);
 
     // Re-create all the cron jobs.
-    $volumes = $this->generateVolumeData($project_name, $deployment_name, $secrets, TRUE);
+    $volumes = $this->generateVolumeData($project_name, $deployment_name, $secrets);
 
     // Retrieve image to use for cron jobs, dont try and create if no image yet.
     if ($image = $deployment_config['spec']['template']['spec']['containers'][0]['image'] ?? FALSE) {
